@@ -62,7 +62,7 @@ export const useLogin = () => {
       if (token) {
         setAuthToken(token);
       }
-      toast.success('👋 Welcome back! Logged in successfully.');
+      toast.success('Welcome back! Logged in successfully.');
     },
     onError: (error) => {
       const message = error?.response?.data?.message || 'Login failed. Please check your email and password.';
@@ -81,13 +81,12 @@ export const useLogout = () => {
     mutationFn: logoutUser,
     onSuccess: () => {
       setAuthToken(null);
-      queryClient.removeQueries({ queryKey: ['currentUser'] });
-      queryClient.removeQueries({ queryKey: ['adminTest'] });
+       queryClient.clear();
       toast.success('Logged out successfully.');
     },
     onError: (error) => {
       setAuthToken(null);
-      queryClient.removeQueries({ queryKey: ['currentUser'] });
+      queryClient.clear();
       const message = error?.response?.data?.message || 'An error occurred during logout.';
       toast.error(message);
     },
@@ -139,10 +138,7 @@ export const useVerifyResetPassword = () => {
 export const useCurrentUser = () => {
   return useQuery({
     queryKey: ['currentUser'],
-    queryFn: async () => {
-      const response = await getCurrentUser();
-      return response;
-    },
+    queryFn: getCurrentUser,
   });
 };
 
@@ -155,12 +151,7 @@ export const useAdminTest = () => {
   const token = getAuthToken();
   return useQuery({
     queryKey: ['adminTest'],
-    queryFn: async () => {
-      const response = await adminTest();
-      return response;
-    },
-    enabled: !!token,
-    retry: false,
+    queryFn: adminTest,
   });
 };
 
