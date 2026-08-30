@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import {
-  sendRegisterOtp,
+import { sendRegisterOtp,
   verifyRegisterOtp,
   loginUser,
   logoutUser,
@@ -10,8 +9,6 @@ import {
   getCurrentUser,
   adminTest,
   changeUserRole,
-} from "../api/endpoints";
-import {
   addUser,
   deleteUser,
   getAdminDashboard,
