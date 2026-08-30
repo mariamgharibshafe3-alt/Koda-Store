@@ -15,6 +15,15 @@ import { sendRegisterOtp,
   getAllUsers,
   getUserById,
   updataUser,
+  getAllProducts,
+  createProduct,
+  searchProducts,
+  getProductById,
+  deleteProduct,
+  updateProduct,
+  getProductReviews,
+  addReview,
+  deleteReview,
 } from "./endpointapi";
 
 const setAuthToken = (token) => {
@@ -193,7 +202,7 @@ export const useAddUser = () => {
     onSuccess: () => {
       toast.success("Added user successfully");
     },
-    onError: () => {
+    onError: (error) => {
       const message = error?.response?.data?.message || "Failed to add user";
       toast.error(message);
     },
@@ -206,7 +215,7 @@ export const useUpdateUser = () => {
     onSuccess: () => {
       toast.success("update user successfully");
     },
-    onError: () => {
+    onError: (error) => {
       const message = error?.response?.data?.message || "Failed to updata user";
       toast.error(message);
     },
@@ -219,9 +228,122 @@ export const useDeleteUser = () => {
     onSuccess: () => {
       toast.success("delete user successfully");
     },
-    onError: () => {
+    onError: (error) => {
       const message =
         error?.response?.data?.message || "Failed to deleted user";
+      toast.error(message);
+    },
+  });
+};
+
+// Products
+export const useProducts = () => {
+  return useQuery({
+    queryKey: ["products"],
+    queryFn: getAllProducts,
+  });
+};
+
+export const useCreateProduct = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createProduct,
+    onSuccess: () => {
+      toast.success("Product created successfully");
+      queryClient.invalidateQueries({ queryKey: ["products"] });  // auto update products
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || "Failed to create product";
+      toast.error(message);
+    },
+  });
+};
+
+export const useSearchProducts = (searchTerm) => {
+  return useQuery({
+    queryKey: ["searchProducts", searchTerm],
+    queryFn: () => searchProducts(searchTerm),
+    enabled: !!searchTerm,
+  });
+}
+
+export const useProduct = (id) => {
+  return useQuery({
+    queryKey: ["product", id],
+    queryFn: () => getProductById(id),
+    enabled: !!id,
+  });
+}
+
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      toast.success("Product deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || "Failed to delete product";
+      toast.error(message);
+    },
+  });
+}
+
+export const useUpdateProduct = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, payload }) => updateProduct(id, payload),
+    onSuccess: () => {
+      toast.success("Product updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || "Failed to update product";
+      toast.error(message);
+    },
+  });
+}
+
+// Reviews
+export const useGetProductReviews = (productId) => {
+  return useQuery({
+    queryKey: ["productReviews", productId],
+    queryFn: () => getProductReviews(productId),
+    enabled: !!productId,
+  });
+};
+
+export const useAddReview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ productId, payload }) => addReview(productId, payload),
+    onSuccess: (data, variables) => {
+      toast.success("Review added successfully");
+      queryClient.invalidateQueries({ queryKey: ["productReviews", variables.productId] });
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || "Failed to add review";
+      toast.error(message);
+    },
+  });
+};
+
+export const useDeleteReview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ productId, reviewId }) => deleteReview(productId, reviewId),
+    onSuccess: (data, variables) => {
+      toast.success("Review deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["productReviews", variables.productId] });
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || "Failed to delete review";
       toast.error(message);
     },
   });
