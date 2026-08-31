@@ -33,7 +33,6 @@ const setAuthToken = (token) => {
     localStorage.removeItem("userToken");
   }
 };
-
 const getAuthToken = () => localStorage.getItem("userToken");
 
 export const useSendRegisterOtp = () => {
