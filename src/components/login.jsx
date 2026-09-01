@@ -1,4 +1,3 @@
-import { loginUser } from '../server/endpointapi';
 import React, { useState } from "react";
 import { LockKeyhole, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -8,7 +7,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-     
+  const { loginUser } = useLoginUser();
   const validate = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
